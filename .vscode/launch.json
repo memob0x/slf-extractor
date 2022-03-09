@@ -1,0 +1,21 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "pwa-node",
+            "request": "launch",
+            "name": "Launch Program",
+            "skipFiles": [
+                "<node_internals>/**"
+            ],
+            "runtimeArgs": [
+                "--experimental-specifier-resolution=node"
+            ],
+            "program": "${workspaceFolder}/index.js",
+            "args": [
+                "data/Sounds.slf",
+            ],
+            "console": "integratedTerminal"
+        }
+    ]
+}

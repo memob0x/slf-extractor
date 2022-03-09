@@ -1,7 +1,7 @@
 import path from 'path';
 import { argv } from 'process';
 
-import extractSlf from './extract-slf';
+import runtimeExtractSlf from './src/utils/runtime/runtime-extract-slf';
 
 const [
   slfFilePath,
@@ -9,7 +9,7 @@ const [
   extractionDestinationPath = './output',
 ] = argv.slice(2);
 
-extractSlf(
+runtimeExtractSlf(
   path.resolve(slfFilePath),
 
   path.resolve(extractionDestinationPath),
