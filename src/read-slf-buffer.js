@@ -4,6 +4,10 @@ import readFileBuffer from './read-file-buffer';
 
 const { hrtime } = process;
 
+const onStat = (size) => log(`File size:\t ${size}\n`);
+
+const onProgress = (percentage) => log(`Progress:\t ${percentage}%\r`);
+
 const readSlfBuffer = async (slfFilePath) => {
   if (slfFilePath) {
     log(`Process:\t Reading ${slfFilePath}\n`);
@@ -17,9 +21,11 @@ const readSlfBuffer = async (slfFilePath) => {
     readResult = await readFileBuffer(
       slfFilePath,
 
-      (size) => log(`File size:\t ${size}\n`),
+      {
+        onStat,
 
-      (p) => log(`Progress:\t ${p}%\r`),
+        onProgress,
+      },
     );
   } catch (e) {
     log(`${e.message}\n`);

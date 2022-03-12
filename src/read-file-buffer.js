@@ -1,28 +1,19 @@
 import { stat } from 'fs/promises';
 import { createReadStream } from 'fs';
 
-const readStreamOptions = {
-  // TODO: check what is this all about...
-
-  // flag: 'a+',
-  // encoding: 'ASCII',
-  // start: 5,
-  // end: 64,
-
-  // highWaterMark: 16,
-};
-
-const readFileBufferWithStreams = (filePath, fileSize, onProgress) => (
+const readFileBufferWithStreams = (filePath, fileSize, options) => (
   new Promise((resolve, reject) => {
     const readStream = createReadStream(
       filePath,
 
-      readStreamOptions,
+      options,
     );
 
     const readChunks = [];
 
     let readLength = 0;
+
+    const { onProgress } = options || {};
 
     readStream.on('data', (chunk) => {
       readChunks.push(chunk);
@@ -47,7 +38,7 @@ const readFileBufferWithStreams = (filePath, fileSize, onProgress) => (
  * @param {string} filePath The path to the file to be read
  * @returns {Promise<any>}
  */
-const readFileBuffer = async (filePath, onStat, onProgress) => {
+const readFileBuffer = async (filePath, options) => {
   if (!filePath) {
     throw new Error('Missing input file.');
   }
@@ -60,11 +51,13 @@ const readFileBuffer = async (filePath, onStat, onProgress) => {
 
   const fileSize = stats.size;
 
+  const { onStat } = options || {};
+
   if (onStat) {
     onStat(fileSize);
   }
 
-  return readFileBufferWithStreams(filePath, fileSize, onProgress);
+  return readFileBufferWithStreams(filePath, fileSize, options);
 };
 
 export default readFileBuffer;

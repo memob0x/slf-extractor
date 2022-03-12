@@ -37,6 +37,9 @@
 // - 2 byte unsigned number with name usReserved2 (not used)
 // - 2 byte padding (4 byte alignment)
 
+const { Buffer } = global;
+const { isBuffer } = Buffer;
+
 const INT_BUFFER_STRING_LENGTH = 256;
 const INT_BUFFER_NUMBER_LENGTH = 4;
 
@@ -61,42 +64,6 @@ const getSlfBufferEntriesBuffer = (buffer, entriesCount) => {
   );
 };
 
-const getSlfBufferEntriesInfos = (buffer) => {
-  const entriesCount = getSlfBufferEntriesCount(buffer);
-
-  const bufferEntries = getSlfBufferEntriesBuffer(buffer, entriesCount);
-
-  const infos = [];
-
-  for (let entryIndex = 0; entryIndex < entriesCount; entryIndex += 1) {
-    infos.push(
-      [
-        bufferEntries.toString(
-          'utf-8',
-
-          INT_SLF_BUFFER_ENTRY_LENGTH * entryIndex,
-
-          INT_SLF_BUFFER_ENTRY_LENGTH * entryIndex + INT_BUFFER_STRING_LENGTH,
-        ),
-
-        bufferEntries.readUInt16LE(
-          INT_SLF_BUFFER_ENTRY_LENGTH * entryIndex + INT_BUFFER_STRING_LENGTH,
-
-          INT_SLF_BUFFER_ENTRY_LENGTH * entryIndex + INT_BUFFER_STRING_LENGTH + INT_BUFFER_NUMBER_LENGTH,
-        ),
-
-        bufferEntries.readUInt16LE(
-          INT_SLF_BUFFER_ENTRY_LENGTH * entryIndex + INT_BUFFER_STRING_LENGTH + INT_BUFFER_NUMBER_LENGTH,
-
-          INT_SLF_BUFFER_ENTRY_LENGTH * entryIndex + INT_BUFFER_STRING_LENGTH + INT_BUFFER_NUMBER_LENGTH + INT_BUFFER_NUMBER_LENGTH,
-        ),
-      ],
-    );
-  }
-
-  return infos;
-};
-
 const sanitizeName = (name) => name.replace(/\W+/g, '');
 
 const sanitizeFilename = (name) => {
@@ -105,20 +72,78 @@ const sanitizeFilename = (name) => {
   return `${sanitizeName(name.replace(extension, ''))}.${sanitizeName(extension)}`;
 };
 
+const getSlfBufferEntryInfos = (bufferEntries, entryIndex) => {
+  const info = [];
+
+  let pointer0 = INT_SLF_BUFFER_ENTRY_LENGTH * entryIndex;
+
+  let pointer1 = pointer0 + INT_BUFFER_STRING_LENGTH;
+
+  const name = bufferEntries.toString(
+    'ascii',
+
+    pointer0,
+
+    pointer1,
+  );
+
+  info.push(sanitizeFilename(name));
+
+  pointer0 = pointer1;
+
+  pointer1 = pointer0 + INT_BUFFER_NUMBER_LENGTH;
+
+  const dataSliceStart = bufferEntries.readUInt32LE(
+    pointer0,
+
+    pointer1,
+  );
+
+  info.push(dataSliceStart);
+
+  pointer0 = pointer1;
+
+  pointer1 = pointer0 + INT_BUFFER_NUMBER_LENGTH;
+
+  const dataSliceEnd = bufferEntries.readUInt32LE(
+    pointer0,
+
+    pointer1,
+  );
+
+  info.push(dataSliceEnd);
+
+  return info;
+};
+
+const getSlfBufferEntriesInfos = (buffer) => {
+  const entriesCount = getSlfBufferEntriesCount(buffer);
+
+  const bufferEntries = getSlfBufferEntriesBuffer(buffer, entriesCount);
+
+  const infos = [];
+
+  for (let entryIndex = 0; entryIndex < entriesCount; entryIndex += 1) {
+    infos.push(getSlfBufferEntryInfos(bufferEntries, entryIndex));
+  }
+
+  return infos;
+};
+
 const getSlfBufferEntries = (buffer) => {
-  if (!Buffer.isBuffer(buffer)) {
+  if (!isBuffer(buffer)) {
     throw new Error('Input file is not valid buffer.');
   }
 
-  // library original name buffer.toString('utf-8', 0, 256);
-  // library original path buffer.toString('utf-8', 256, 256 + 256));
+  // library original name buffer.toString('ascii', 0, 256);
+  // library original path buffer.toString('ascii', 256, 256 + 256));
 
   const entriesInfos = getSlfBufferEntriesInfos(buffer);
 
   const entriesData = entriesInfos.map((x) => [
-    sanitizeFilename(x[0]),
+    x[0],
 
-    buffer.slice(x[1], x[2]),
+    buffer.slice(x[1], x[1] + x[2]),
   ]);
 
   return entriesData;

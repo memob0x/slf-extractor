@@ -20,9 +20,11 @@ const writeSlfEntries = async (entries, destinationPath) => {
     await Promise.all(entries.map(([name, data]) => {
       const path = `${destinationPath}/${name}`;
 
-      log(`Process:\t ${path} file\n`);
+      const { length } = data;
 
-      return writeFile(path, data);
+      log(`Process:\t ${path} file (size: ${length})\n`);
+
+      return writeFile(path, data, 'ascii');
     }));
   } catch (e) {
     log(`${e.message}\n`);
