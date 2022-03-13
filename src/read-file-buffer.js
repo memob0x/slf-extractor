@@ -35,29 +35,29 @@ const readFileBufferWithStreams = (filePath, fileSize, options) => (
 );
 
 /**
- * @param {string} filePath The path to the file to be read
- * @returns {Promise<any>}
+ * @param {string} filePath - The path to the file to be read.
+ * @param {object} options - The options object to be passed to "fs.createReadStream" function
+ * along with "onStat" and "onProgress" callbacks.
+ * @returns {Promise<Buffer>} The read file buffer.
  */
 const readFileBuffer = async (filePath, options) => {
   if (!filePath) {
     throw new Error('Missing input file.');
   }
 
-  const stats = await stat(filePath);
+  const { size } = await stat(filePath) || {};
 
-  if (!stats) {
+  if (!size) {
     throw new Error(`${filePath} is either invalid or unexistent.`);
   }
-
-  const fileSize = stats.size;
 
   const { onStat } = options || {};
 
   if (onStat) {
-    onStat(fileSize);
+    onStat(size);
   }
 
-  return readFileBufferWithStreams(filePath, fileSize, options);
+  return readFileBufferWithStreams(filePath, size, options);
 };
 
 export default readFileBuffer;
