@@ -1,14 +1,18 @@
+// +build !testing
+
 package main
 
 import "fyne.io/fyne/v2"
 
 type gui struct {
-	title  string
+	title string
+
 	window fyne.Window
-	size   fyne.Size
+
+	size fyne.Size
 }
 
-func (instance *gui) render(app fyne.App) {
+func (instance *gui) Render(app fyne.App) {
 	instance.window = app.NewWindow(instance.title)
 
 	instance.window.Resize(instance.size)
@@ -16,9 +20,10 @@ func (instance *gui) render(app fyne.App) {
 	instance.window.Show()
 }
 
-func getGui() *gui {
+func Gui() *gui {
 	return &gui{
 		title: "Slf Exporter",
-		size:  fyne.NewSize(420, 260),
+
+		size: fyne.NewSize(420, 260),
 	}
 }

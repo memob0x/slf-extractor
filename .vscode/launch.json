@@ -1,28 +1,26 @@
 {
     "version": "0.2.0",
-    "configurations": [
-        {
-            "name": "Launch Go",
+    "configurations": [{
+            "name": "Launch GUI",
             "type": "go",
             "request": "launch",
             "mode": "debug",
             "program": "${workspaceRoot}"
         },
         {
-            "type": "pwa-node",
+            "name": "Launch Unit Tests",
+            "type": "go",
             "request": "launch",
-            "name": "Launch Node",
-            "skipFiles": [
-                "<node_internals>/**"
-            ],
-            "runtimeArgs": [
-                "--experimental-specifier-resolution=node"
-            ],
-            "program": "${workspaceRoot}/index.js",
+            "mode": "test",
+            "program": "${workspaceRoot}",
             "args": [
-                "data/Ambient.slf",
-            ],
-            "console": "integratedTerminal"
+                "-test.run",
+                // test function name
+                // * can use reguler expression
+                // * NOT include "Test"
+                // * the first charactor MUST be small
+                "."
+            ]
         }
     ]
 }
