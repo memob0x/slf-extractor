@@ -1,3 +1,5 @@
-data
+*.slf
+*.SLF
 output
+slf-exporter
 __debug_bin
