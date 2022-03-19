@@ -15,7 +15,7 @@ func TestGetSlfHeader(t *testing.T) {
 		return
 	}
 
-	var buffer, _, _ = ReadFileBuffer("./data/Ambient.slf", func(_ int) {})
+	var buffer, _, _ = ReadFileBuffer("./test.slf", func(_ int) {})
 
 	var header, _ = GetSlfHeader(buffer)
 

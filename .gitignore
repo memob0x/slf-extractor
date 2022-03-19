@@ -1,5 +1,6 @@
 *.slf
 *.SLF
+.env
 output
 slf-exporter
 local.env

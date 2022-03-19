@@ -10,7 +10,7 @@ import (
 func TestReadFileBuffer(t *testing.T) {
 	var percentageFormer int = -1
 
-	var buffer, _, _ = ReadFileBuffer("./read_file_buffer_test.txt", func(percentage int) {
+	var buffer, _, _ = ReadFileBuffer("./test.txt", func(percentage int) {
 		assert.IsTypef(t, int(0), percentage, "should return an int")
 
 		assert.GreaterOrEqual(t, percentage, percentageFormer, "percentage should increment")
