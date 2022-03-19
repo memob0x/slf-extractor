@@ -11,5 +11,6 @@ func SanitizeStringFilename(value string) string {
 
 	var extension string = parts[len(parts)-1]
 
+	// FIXME: allow "/"
 	return fmt.Sprintf("%v.%v", SanitizeStringWord(strings.Replace(value, extension, "", -1)), SanitizeStringWord(extension))
 }

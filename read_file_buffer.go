@@ -1,12 +1,11 @@
 package main
 
 import (
-	"bytes"
 	"os"
 )
 
-func ReadFileBuffer(path string, onProgress func(progress int)) (*bytes.Buffer, os.FileInfo, error) {
-	var buffer = bytes.NewBuffer(make([]byte, 0))
+func ReadFileBuffer(path string, onProgress func(progress int)) ([]byte, os.FileInfo, error) {
+	var buffer = make([]byte, 0)
 	var err error
 
 	stats, err := os.Stat(path)
@@ -42,7 +41,7 @@ func ReadFileBuffer(path string, onProgress func(progress int)) (*bytes.Buffer, 
 
 		onProgress(percentage)
 
-		buffer.Write(chunk[:readLengthPart])
+		buffer = append(buffer, chunk[:readLengthPart]...)
 	}
 
 	return buffer, stats, err

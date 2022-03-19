@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bytes"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -17,5 +18,5 @@ func TestReadFileBuffer(t *testing.T) {
 		percentageFormer = percentage
 	})
 
-	assert.Equal(t, "foobar", buffer.String(), "should be able to read files returning them as buffer")
+	assert.Equal(t, "foobar", bytes.NewBuffer(buffer).String(), "should be able to read files returning them as buffer")
 }

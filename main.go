@@ -1,6 +1,10 @@
 package main
 
-import "fyne.io/fyne/v2/app"
+import (
+	"fyne.io/fyne/v2/app"
+
+	_ "github.com/joho/godotenv/autoload"
+)
 
 func main() {
 	var fyne = app.New()

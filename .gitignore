@@ -2,4 +2,5 @@
 *.SLF
 output
 slf-exporter
+local.env
 __debug_bin
