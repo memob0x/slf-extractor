@@ -1,75 +1,121 @@
-//go:build !testing
-// +build !testing
-
 package main
 
 import (
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/container"
 	"fyne.io/fyne/v2/data/binding"
+	"fyne.io/fyne/v2/dialog"
 	"fyne.io/fyne/v2/layout"
+	"fyne.io/fyne/v2/storage"
 	"fyne.io/fyne/v2/widget"
 )
 
 type gui struct {
-	title string
+	app fyne.App
 
-	window fyne.Window
+	entries binding.StringList
 
-	size fyne.Size
+	list *widget.List
+
+	buttonReadEntries *widget.Button
+
+	buttonWriteEntries *widget.Button
 }
 
 func (instance *gui) Render(app fyne.App) {
-	instance.window = app.NewWindow(instance.title)
+	instance.app = app
 
-	instance.window.Resize(instance.size)
+	var window fyne.Window = app.NewWindow("Slf Exporter")
 
-	data := binding.NewStringList()
+	window.Resize(fyne.NewSize(420, 260))
 
-	data.Set([]string{
-		"hello",
-		"foobar",
-		"foobar",
-		"foobar",
-		"foobar",
-		"foobar",
-		"foobar",
-		"foobar",
-		"foobar",
-		"foobar",
-		"foobar",
-		"foobar",
-		"foobar",
-	})
+	var windowContent *fyne.Container = container.NewBorder(
+		container.New(
+			layout.NewVBoxLayout(),
 
-	var list = widget.NewListWithData(data, func() fyne.CanvasObject {
-		return widget.NewLabel("template")
-	},
-		func(i binding.DataItem, o fyne.CanvasObject) {
-			o.(*widget.Label).Bind(i.(binding.String))
-		})
+			instance.buttonReadEntries,
 
-	var read = widget.NewButton("Read", func() {})
+			instance.buttonWriteEntries,
+		),
 
-	var export = widget.NewButton("Export", func() {})
+		nil,
 
-	instance.window.SetContent(container.NewBorder(nil, container.New(layout.NewVBoxLayout(), read, export), nil, nil, list))
+		nil,
 
-	instance.window.Show()
+		nil,
+
+		instance.list,
+	)
+
+	instance.Refresh()
+
+	window.SetContent(windowContent)
+
+	window.Show()
 }
 
-func ReadSlfEntries() {
+func (instance *gui) WriteSlfFileEntriesFiles() {
+	// TODO: actual writing of entries
+	// TODO: clear/reset gui
 
+	instance.Refresh()
 }
 
-func WriteSlfEntries() {
+func (instance *gui) RenderSlfFileChooser() {
+	var window fyne.Window = instance.app.NewWindow("Slf Exporter: file chooser")
 
+	window.Resize(fyne.NewSize(420, 260))
+
+	var fileChooser *dialog.FileDialog = dialog.NewFileOpen(func(fyne.URIReadCloser, error) {
+
+	}, window)
+
+	fileChooser.SetFilter(storage.NewExtensionFileFilter([]string{".slf"}))
+
+	window.Show()
+
+	fileChooser.Show()
+}
+
+func (instance *gui) Refresh() {
+	// if file ok
+	// TODO: display list
+	// TODO: enable "write" button
+
+	// if file not ok
+	// TODO: display error with "x" button
+
+	instance.entries.Set([]string{"hello"})
+
+	instance.buttonReadEntries.OnTapped = func() {
+		// TODO: hide former errors
+
+		instance.RenderSlfFileChooser()
+	}
+
+	instance.buttonReadEntries.Refresh()
 }
 
 func Gui() *gui {
-	return &gui{
-		title: "Slf Exporter",
+	var entries = binding.NewStringList()
 
-		size: fyne.NewSize(420, 260),
+	return &gui{
+		entries: entries,
+
+		list: widget.NewListWithData(
+			entries,
+
+			func() fyne.CanvasObject {
+				return widget.NewLabel("template")
+			},
+
+			func(i binding.DataItem, o fyne.CanvasObject) {
+				o.(*widget.Label).Bind(i.(binding.String))
+			},
+		),
+
+		buttonReadEntries: widget.NewButton("Read", nil),
+
+		buttonWriteEntries: widget.NewButton("Export", nil),
 	}
 }
