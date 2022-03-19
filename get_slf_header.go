@@ -27,7 +27,7 @@ func GetSlfHeader(buffer []byte) ([]string, error) {
 	pointer0 = pointer1
 	pointer1 = pointer0 + INT_BUFFER_STRING_LENGTH
 
-	var originalSlfPath = SanitizeStringFilename(string(buffer[pointer0:pointer1])) // TODO: sanitize, convert / to \
+	var originalSlfPath = SanitizeStringFilename(string(buffer[pointer0:pointer1]))
 
 	header = append(header, originalSlfPath)
 

@@ -2,8 +2,6 @@ package main
 
 // NOTE: see SLF.md
 
-const STRING_ENCODING string = "ascii"
-
 const INT_BUFFER_STRING_LENGTH int = 256
 
 const INT_BUFFER_NUMBER_LENGTH int = 4
