@@ -1,9 +1,5 @@
 package main
 
-import (
-	"encoding/binary"
-)
-
 // NOTE: see SLF.md
 
 type entryInformation struct {
@@ -25,26 +21,30 @@ func GetSlfBufferEntryInfos(bufferAreaEntriesInfos []byte, entryIndex int, buffe
 
 	pointer1 = pointer0 + INT_BUFFER_NUMBER_LENGTH
 
-	var dataSliceStart int = int(binary.LittleEndian.Uint32(bufferAreaEntriesInfos[pointer0:pointer1]))
+	var dataSliceStart int = GetLittleEndianUnsignedInt32(bufferAreaEntriesInfos, pointer0, pointer1)
 
 	pointer0 = pointer1
 
 	pointer1 = pointer0 + INT_BUFFER_NUMBER_LENGTH
 
-	var dataSliceLength int = int(binary.LittleEndian.Uint32(bufferAreaEntriesInfos[pointer0:pointer1]))
+	var dataSliceLength int = GetLittleEndianUnsignedInt32(bufferAreaEntriesInfos, pointer0, pointer1)
 
 	info.data = buffer[dataSliceStart : dataSliceStart+dataSliceLength]
 
 	return info
 }
 
-// Will throw an error if the argument is not a valid buffer object.
 // Gets the slf file entries informations from a given slf file buffer
-func GetSlfBufferEntries(buffer []byte) ([]entryInformation, error) {
+func GetSlfBufferEntries(buffer []byte) []entryInformation {
 	var infos []entryInformation = []entryInformation{}
-	var err error
 
-	var entriesCount int = int(binary.LittleEndian.Uint32(buffer[INT_SLF_BUFFER_OFFSET_START_ENTRIES_COUNT : INT_SLF_BUFFER_OFFSET_START_ENTRIES_COUNT+INT_BUFFER_NUMBER_LENGTH]))
+	var entriesCount int = GetLittleEndianUnsignedInt32(
+		buffer,
+
+		INT_SLF_BUFFER_OFFSET_START_ENTRIES_COUNT,
+
+		INT_SLF_BUFFER_OFFSET_START_ENTRIES_COUNT+INT_BUFFER_NUMBER_LENGTH,
+	)
 
 	var bufferLength int = len(buffer)
 
@@ -54,5 +54,5 @@ func GetSlfBufferEntries(buffer []byte) ([]entryInformation, error) {
 		infos = append(infos, GetSlfBufferEntryInfos(bufferAreaEntriesInfos, entryIndex, buffer))
 	}
 
-	return infos, err
+	return infos
 }

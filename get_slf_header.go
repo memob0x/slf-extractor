@@ -6,7 +6,6 @@ import (
 )
 
 // Retrieves the main header informations from a buffer: the original slf file name and path.
-// Will throw when the given argument is either not a valid buffer
 func GetSlfHeader(buffer []byte) ([]string, error) {
 	var header []string = []string{}
 	var err error
