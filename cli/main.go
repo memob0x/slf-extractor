@@ -25,3 +25,7 @@ func init() {
 
 	utils.ExtractSlfEntries(slfPath, destPath)
 }
+
+func main() {
+
+}

@@ -2,12 +2,11 @@ package utils
 
 import (
 	"fmt"
-	"os"
 	"testing"
 )
 
 func TestExtractSlfEntriesTest(t *testing.T) {
-	if os.Getenv("TEST_SLF_FILES") != "1" {
+	if !TEST_SLF_FILES {
 		fmt.Printf("TEST_SLF_FILES env var is not set, skipping this test case \n")
 
 		return

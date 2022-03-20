@@ -2,11 +2,9 @@ package gui
 
 import (
 	"fyne.io/fyne/v2/app"
-
-	_ "github.com/joho/godotenv/autoload"
 )
 
-func main() {
+func init() {
 	var fyne = app.New()
 
 	var gui = Gui()
@@ -14,4 +12,8 @@ func main() {
 	gui.Render(fyne)
 
 	fyne.Run()
+}
+
+func main() {
+
 }
