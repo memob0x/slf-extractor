@@ -7,7 +7,7 @@ package_split=(${package//\// })
 package_name=${package_split[-1]}
 
 # go tool dist list
-platforms=("windows/amd64" "windows/386" "linux/386" "linux/amd64")
+platforms=("windows/amd64" "linux/amd64" "darwin/amd64")
 
 for platform in "${platforms[@]}"
 do

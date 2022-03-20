@@ -4,13 +4,13 @@ Extract your copy of [Jagged Alliance 2](https://it.wikipedia.org/wiki/Jagged_Al
 
 ## Usage
 
-### GUI
-
-[Download](https://github.com/memob0x/slf-extractor/releases) the latest version of the standalone GUI executable and launch it.
-
 ### CLI
 
 [Download](https://github.com/memob0x/slf-extractor/releases) the latest version of the standalone CLI and launch it.
+
+```console
+./slf-exporter-linux-adm64 ./FILE.slf ./dir
+```
 
 ### Extra
 

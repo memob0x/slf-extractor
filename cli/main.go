@@ -4,8 +4,6 @@ import (
 	"os"
 
 	"github.com/memob0x/slf-exporter/utils"
-
-	_ "github.com/joho/godotenv/autoload"
 )
 
 func init() {
