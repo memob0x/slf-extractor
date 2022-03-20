@@ -3,5 +3,5 @@
 .env
 output
 slf-exporter
-local.env
+slf-exporter-*
 __debug_bin

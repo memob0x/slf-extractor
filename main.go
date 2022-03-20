@@ -1,17 +1,9 @@
 package main
 
 import (
-	"fyne.io/fyne/v2/app"
-
-	_ "github.com/joho/godotenv/autoload"
+	_ "github.com/memob0x/slf-exporter/cli"
 )
 
 func main() {
-	var fyne = app.New()
 
-	var gui = Gui()
-
-	gui.Render(fyne)
-
-	fyne.Run()
 }
