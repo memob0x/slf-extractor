@@ -1,3 +1,7 @@
-node_modules
-data
+*.slf
+*.SLF
+.env
 output
+slf-exporter
+slf-exporter-*
+__debug_bin
