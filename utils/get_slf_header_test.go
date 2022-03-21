@@ -1,23 +1,32 @@
 package utils
 
 import (
-	"fmt"
+	"os"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
 )
 
 func TestGetSlfHeader(t *testing.T) {
-	if !TEST_SLF_FILES {
-		fmt.Printf("TEST_SLF_FILES env var is not set, skipping this test case \n")
+	WriteFile("bizz.slf", CreateSlfBuffer("original-name.slf", "./original/path", []entryInformation{
+		{
+			name: "first.txt",
 
-		return
-	}
+			data: []byte("foo"),
+		},
+		{
+			name: "second.txt",
 
-	var buffer, _, _ = ReadFileBuffer("./test.slf", func(_ int) {})
+			data: []byte("bar"),
+		},
+	}))
+
+	var buffer, _, _ = ReadFileBuffer("./bizz.slf", func(_ int) {})
 
 	var header, _ = GetSlfHeader(buffer)
 
-	assert.Equal(t, "AMBIENT.SLF", header[0], "should be able to read original slf file name")
-	assert.Equal(t, "Ambient/", header[1], "should be able to read original slf file path (relative do original installation path \"Data\" folder")
+	assert.Equal(t, "original-name.slf", header[0], "should be able to read original slf file name")
+	assert.Equal(t, "./original/path", header[1], "should be able to read original slf file path (relative do original installation path \"Data\" folder")
+
+	os.Remove("bizz.slf")
 }
