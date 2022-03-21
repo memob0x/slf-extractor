@@ -1,18 +1,41 @@
 package utils
 
 import (
-	"fmt"
+	"os"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func TestExtractSlfEntriesTest(t *testing.T) {
-	if !TEST_SLF_FILES {
-		fmt.Printf("TEST_SLF_FILES env var is not set, skipping this test case \n")
+	WriteFile("FOOBAR.SLF", CreateSlfBuffer("FOOBAR.SLF", ".", []entryInformation{
+		{
+			name: "first.txt",
 
-		return
-	}
+			data: []byte("foo"),
+		},
+		{
+			name: "second.txt",
 
-	ExtractSlfEntries("./test.slf", "./output")
+			data: []byte("bar"),
+		},
+	}))
 
-	// TODO: add test cases
+	ExtractSlfEntries("./FOOBAR.SLF", "./")
+
+	_, err0 := os.Stat("FOOBAR.SLF")
+
+	assert.Nil(t, err0, "ok")
+
+	_, err1 := os.Stat("first.txt")
+
+	assert.Nil(t, err1, "ok")
+
+	_, err2 := os.Stat("second.txt")
+
+	assert.Nil(t, err2, "ok")
+
+	os.Remove("FOOBAR.SLF")
+	os.Remove("first.txt")
+	os.Remove("second.txt")
 }
