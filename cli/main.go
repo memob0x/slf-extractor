@@ -21,9 +21,6 @@ func init() {
 		destPath = os.Args[2]
 	}
 
+	// TODO: printf some progress informations
 	utils.ExtractSlfEntries(slfPath, destPath)
-}
-
-func main() {
-
 }

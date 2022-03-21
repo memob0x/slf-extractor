@@ -13,7 +13,3 @@ func init() {
 
 	fyne.Run()
 }
-
-func main() {
-
-}

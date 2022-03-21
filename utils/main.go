@@ -1,5 +1,15 @@
 package utils
 
-const TEST_SLF_FILES bool = false // TODO: remove this when test.slf with custom data (not proprietary) has been generated
+// NOTE: see SLF.md
 
-func main() {}
+const INT_BUFFER_STRING_LENGTH int = 256
+
+const INT_BUFFER_NUMBER_LENGTH int = 4
+
+const INT_SLF_BUFFER_ENTRY_LENGTH int = 280
+const INT_SLF_BUFFER_HEADER_LENGTH int = 532
+
+// placed in slf header after lib name (string) and lib path (string)
+const INT_SLF_BUFFER_OFFSET_START_ENTRIES_COUNT int = INT_BUFFER_STRING_LENGTH * 2
+
+const TEST_SLF_FILES bool = false // TODO: remove this when test.slf with custom data (not proprietary) has been generated

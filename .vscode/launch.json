@@ -1,26 +1,20 @@
 {
     "version": "0.2.0",
     "configurations": [{
-            "name": "Launch GUI",
+            "name": "GUI",
             "type": "go",
             "request": "launch",
             "mode": "debug",
-            "program": "${workspaceRoot}"
+            "program": "${workspaceRoot}",
+            "buildFlags": "-tags gui",
+            "showLog": true
         },
         {
-            "name": "Launch Unit Tests",
+            "name": "Utilities",
             "type": "go",
             "request": "launch",
             "mode": "test",
-            "program": "${workspaceRoot}",
-            "args": [
-                "-test.run",
-                // test function name
-                // * can use reguler expression
-                // * NOT include "Test"
-                // * the first charactor MUST be small
-                "."
-            ]
+            "program": "${workspaceRoot}/utils"
         }
     ]
 }
