@@ -7,7 +7,7 @@ import (
 )
 
 func TestCreateSlfBuffer(t *testing.T) {
-	var buffer []byte = CreateSlfBuffer("TEST.SLF", "foobar/", []entryInformation{
+	var buffer []byte = CreateSlfBuffer("TEST.SLF", "foobar/", []SlfEntry{
 		{
 			name: "first.txt",
 
@@ -22,8 +22,8 @@ func TestCreateSlfBuffer(t *testing.T) {
 
 	var header, _ = GetSlfHeader(buffer)
 
-	assert.Equal(t, "TEST.SLF", header[0], "should be able to read original slf file name")
-	assert.Equal(t, "foobar/", header[1], "should be able to read original slf file path (relative do original installation path \"Data\" folder")
+	assert.Equal(t, "TEST.SLF", header.originalName, "should be able to read original slf file name")
+	assert.Equal(t, "foobar/", header.originalPath, "should be able to read original slf file path (relative do original installation path \"Data\" folder")
 
 	var entries = GetSlfBufferEntries(buffer)
 
@@ -32,7 +32,7 @@ func TestCreateSlfBuffer(t *testing.T) {
 	assert.Equal(t, 2, entriesCount, "TEST.slf should have 10 entries")
 
 	for i := 0; i < entriesCount; i++ {
-		var entry entryInformation = entries[i]
+		var entry SlfEntry = entries[i]
 
 		assert.IsTypef(t, string(""), entry.name, "entry should have a string \"name\" member")
 

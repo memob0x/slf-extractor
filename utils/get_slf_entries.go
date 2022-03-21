@@ -2,14 +2,14 @@ package utils
 
 // NOTE: see SLF.md
 
-type entryInformation struct {
+type SlfEntry struct {
 	name string
 
 	data []byte
 }
 
-func GetSlfBufferEntryInfos(bufferAreaEntriesInfos []byte, entryIndex int, buffer []byte) entryInformation {
-	var info entryInformation = entryInformation{}
+func getSlfBufferEntryInfos(bufferAreaEntriesInfos []byte, entryIndex int, buffer []byte) SlfEntry {
+	var info SlfEntry = SlfEntry{}
 
 	var pointer0 int = INT_SLF_BUFFER_ENTRY_LENGTH * entryIndex
 
@@ -35,8 +35,8 @@ func GetSlfBufferEntryInfos(bufferAreaEntriesInfos []byte, entryIndex int, buffe
 }
 
 // Gets the slf file entries informations from a given slf file buffer
-func GetSlfBufferEntries(buffer []byte) []entryInformation {
-	var infos []entryInformation = []entryInformation{}
+func GetSlfBufferEntries(buffer []byte) []SlfEntry {
+	var infos []SlfEntry = []SlfEntry{}
 
 	var entriesCount int = GetLittleEndianUnsignedInt32Int(
 		buffer,
@@ -51,7 +51,7 @@ func GetSlfBufferEntries(buffer []byte) []entryInformation {
 	var bufferAreaEntriesInfos []byte = buffer[bufferLength-INT_SLF_BUFFER_ENTRY_LENGTH*entriesCount : bufferLength]
 
 	for entryIndex := 0; entryIndex < entriesCount; entryIndex++ {
-		infos = append(infos, GetSlfBufferEntryInfos(bufferAreaEntriesInfos, entryIndex, buffer))
+		infos = append(infos, getSlfBufferEntryInfos(bufferAreaEntriesInfos, entryIndex, buffer))
 	}
 
 	return infos

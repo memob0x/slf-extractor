@@ -1,6 +1,7 @@
 package utils
 
 import (
+	"io/fs"
 	"os"
 	"testing"
 
@@ -8,7 +9,7 @@ import (
 )
 
 func TestExtractSlfEntriesTest(t *testing.T) {
-	WriteFile("FOOBAR.SLF", CreateSlfBuffer("FOOBAR.SLF", ".", []entryInformation{
+	WriteFile("FOOBAR.SLF", CreateSlfBuffer("FOOBAR.SLF", ".", []SlfEntry{
 		{
 			name: "first.txt",
 
@@ -21,7 +22,7 @@ func TestExtractSlfEntriesTest(t *testing.T) {
 		},
 	}))
 
-	ExtractSlfEntries("./FOOBAR.SLF", "./", 8, func(_ float64) {})
+	ExtractSlfEntries("./FOOBAR.SLF", "./", 8, func(stats fs.FileInfo) {}, func(perc float64) {}, func(header SlfHeader) {}, func(file *os.File) {}, func(files []os.File) {})
 
 	_, err0 := os.Stat("FOOBAR.SLF")
 

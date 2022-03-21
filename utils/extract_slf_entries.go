@@ -1,30 +1,65 @@
 package utils
 
 import (
+	"errors"
 	"io/fs"
-	"log"
 	"os"
 )
 
-// TODO: better errors management
-func ExtractSlfEntries(slfPath string, destinationPath string, chunkSize int, onProgress func(perc float64)) (fs.FileInfo, error) {
-	if _, err := os.Stat(slfPath); os.IsNotExist(err) {
-		log.Fatal("Slf file does not exist.")
+func ExtractSlfEntries(
+	slfPath string,
+
+	destinationPath string,
+
+	chunkSize int,
+
+	onStat func(stats fs.FileInfo),
+
+	onReadProgress func(perc float64),
+
+	onReadComplete func(header SlfHeader),
+
+	onWriteProgress func(file *os.File),
+
+	onWriteComplete func(files []os.File),
+) (fs.FileInfo, []os.File, SlfHeader, error) {
+	if slfStats, err := os.Stat(slfPath); os.IsNotExist(err) {
+		return slfStats, nil, SlfHeader{}, err
 	}
 
-	var buffer, stats, err = ReadFileBuffer(slfPath, chunkSize, onProgress)
+	var buffer, slfStats, err = ReadFileBuffer(slfPath, chunkSize, onStat, onReadProgress)
 
-	var entries []entryInformation = GetSlfBufferEntries(buffer)
+	if err != nil {
+		return slfStats, nil, SlfHeader{}, err
+	}
+
+	header, err := GetSlfHeader(buffer)
+
+	if err != nil {
+		return slfStats, nil, header, errors.New("Invalid slf file.")
+	}
+
+	onReadComplete(header)
+
+	var entries []SlfEntry = GetSlfBufferEntries(buffer)
+
+	var writtenFiles []os.File
 
 	for i, j := 0, len(entries); i < j; i++ {
-		var entry entryInformation = entries[i]
+		var entry SlfEntry = entries[i]
 
-		_, err := WriteFile(destinationPath+"/"+entry.name, entry.data)
+		writtenFile, err := WriteFile(destinationPath+"/"+entry.name, entry.data)
 
 		if err != nil {
-			return stats, err
+			return slfStats, nil, header, err
 		}
+
+		onWriteProgress(writtenFile)
+
+		writtenFiles = append(writtenFiles, *writtenFile)
 	}
 
-	return stats, err
+	onWriteComplete(writtenFiles)
+
+	return slfStats, writtenFiles, header, err
 }

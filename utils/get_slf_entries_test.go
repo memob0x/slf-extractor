@@ -1,6 +1,7 @@
 package utils
 
 import (
+	"io/fs"
 	"os"
 	"testing"
 
@@ -8,7 +9,7 @@ import (
 )
 
 func TestGetSlfEntries(t *testing.T) {
-	WriteFile("bazz.slf", CreateSlfBuffer("bazz.slf", ".", []entryInformation{
+	WriteFile("bazz.slf", CreateSlfBuffer("bazz.slf", ".", []SlfEntry{
 		{
 			name: "first.txt",
 
@@ -21,7 +22,7 @@ func TestGetSlfEntries(t *testing.T) {
 		},
 	}))
 
-	var buffer, _, _ = ReadFileBuffer("./bazz.slf", 8, func(_ float64) {})
+	var buffer, _, _ = ReadFileBuffer("./bazz.slf", 8, func(stat fs.FileInfo) {}, func(_ float64) {})
 
 	var entries = GetSlfBufferEntries(buffer)
 
@@ -30,7 +31,7 @@ func TestGetSlfEntries(t *testing.T) {
 	assert.Equal(t, 2, entriesCount, "bazz.slf should have 2 entries")
 
 	for i := 0; i < entriesCount; i++ {
-		var entry entryInformation = entries[i]
+		var entry SlfEntry = entries[i]
 
 		assert.IsTypef(t, string(""), entry.name, "should have a string \"name\" member")
 

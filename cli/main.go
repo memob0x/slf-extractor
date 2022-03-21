@@ -2,12 +2,34 @@ package cli
 
 import (
 	"fmt"
+	"io/fs"
+	"log"
 	"os"
 
 	"github.com/memob0x/slf-exporter/utils"
 )
 
-func init() {
+func onStat(stats fs.FileInfo) {
+	fmt.Printf("Start extracting.\n")
+}
+
+func onReadComplete(header utils.SlfHeader) {
+	fmt.Printf("%v.\n", header)
+}
+
+func onReadProgress(percentage float64) {
+	fmt.Printf("\rExtracting: %v%%\r", utils.FormatFloat(percentage, 2))
+}
+
+func onWriteComplete(files []os.File) {
+	fmt.Printf("\nDone.\n")
+}
+
+func onWriteProgress(file *os.File) {
+	fmt.Printf("Writing.%v\n", file.Name())
+}
+
+func parseArgs() (string, string) {
 	var argsCount = len(os.Args)
 
 	var slfPath string
@@ -16,12 +38,8 @@ func init() {
 
 	if argsCount >= 2 {
 		slfPath = os.Args[1]
-
-		fmt.Printf("Extraction of \"%v\" started.\n", slfPath)
 	} else {
-		fmt.Printf("No slf file specified, aborting.\n")
-
-		return
+		log.Fatalf("No slf file specified, aborting.\n")
 	}
 
 	if argsCount >= 3 {
@@ -30,24 +48,35 @@ func init() {
 		fmt.Printf("No output folder specified, fallback to \"%v\".\n", destPath)
 	}
 
-	// TODO: printf slf file size
-	// TODO: printf slf read time
-	// TODO: printf original slf name and path
+	return slfPath, destPath
+}
 
-	utils.ExtractSlfEntries(
+func init() {
+	var slfPath, destPath = parseArgs()
+
+	var stat, _, _, err = utils.ExtractSlfEntries(
 		slfPath,
 
 		destPath,
 
 		1048576, // 1MB
 
-		func(percentage float64) {
-			fmt.Printf("Extraction: %v%%\r", utils.FormatFloat(percentage, 2))
-		},
+		onStat,
+
+		onReadProgress,
+
+		onReadComplete,
+
+		onWriteProgress,
+
+		onWriteComplete,
 	)
 
-	// TODO: printf extracted files total size
-	// TODO: printf extracted files write time
+	if stat == nil {
+		log.Fatalf("The given file doesn't exist or it's invalid.\n")
+	}
 
-	fmt.Printf("Done.\n")
+	if err != nil {
+		log.Fatalf(err.Error())
+	}
 }

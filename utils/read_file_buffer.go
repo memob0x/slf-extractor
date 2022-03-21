@@ -2,10 +2,11 @@ package utils
 
 import (
 	"io"
+	"io/fs"
 	"os"
 )
 
-func ReadFileBuffer(path string, chunkSize int, onProgress func(percentage float64)) ([]byte, os.FileInfo, error) {
+func ReadFileBuffer(path string, chunkSize int, onStat func(stat fs.FileInfo), onProgress func(percentage float64)) ([]byte, os.FileInfo, error) {
 	var buffer = make([]byte, 0)
 	var err error
 
@@ -16,6 +17,8 @@ func ReadFileBuffer(path string, chunkSize int, onProgress func(percentage float
 	if err != nil {
 		return buffer, stats, err
 	}
+
+	onStat(stats)
 
 	file, err := os.Open(path)
 

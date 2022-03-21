@@ -2,6 +2,7 @@ package utils
 
 import (
 	"bytes"
+	"io/fs"
 	"os"
 	"testing"
 
@@ -17,6 +18,8 @@ func TestReadFileBuffer(t *testing.T) {
 		"./test.txt",
 
 		8,
+
+		func(stat fs.FileInfo) {},
 
 		func(percentage float64) {
 			assert.IsTypef(t, float64(0), percentage, "should return an int")

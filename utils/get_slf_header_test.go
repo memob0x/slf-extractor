@@ -1,6 +1,7 @@
 package utils
 
 import (
+	"io/fs"
 	"os"
 	"testing"
 
@@ -8,7 +9,7 @@ import (
 )
 
 func TestGetSlfHeader(t *testing.T) {
-	WriteFile("bizz.slf", CreateSlfBuffer("original-name.slf", "./original/path", []entryInformation{
+	WriteFile("bizz.slf", CreateSlfBuffer("original-name.slf", "./original/path", []SlfEntry{
 		{
 			name: "first.txt",
 
@@ -21,12 +22,12 @@ func TestGetSlfHeader(t *testing.T) {
 		},
 	}))
 
-	var buffer, _, _ = ReadFileBuffer("./bizz.slf", 8, func(_ float64) {})
+	var buffer, _, _ = ReadFileBuffer("./bizz.slf", 8, func(stat fs.FileInfo) {}, func(_ float64) {})
 
 	var header, _ = GetSlfHeader(buffer)
 
-	assert.Equal(t, "original-name.slf", header[0], "should be able to read original slf file name")
-	assert.Equal(t, "./original/path", header[1], "should be able to read original slf file path (relative do original installation path \"Data\" folder")
+	assert.Equal(t, "original-name.slf", header.originalName, "should be able to read original slf file name")
+	assert.Equal(t, "./original/path", header.originalPath, "should be able to read original slf file path (relative do original installation path \"Data\" folder")
 
 	os.Remove("bizz.slf")
 }
