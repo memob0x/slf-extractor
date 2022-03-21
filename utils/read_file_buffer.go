@@ -4,6 +4,10 @@ import (
 	"os"
 )
 
+func GetBufferChunkSize(fileSize int) int {
+	return 700
+}
+
 func ReadFileBuffer(path string, onProgress func(progress int)) ([]byte, os.FileInfo, error) {
 	var buffer = make([]byte, 0)
 	var err error
@@ -24,7 +28,7 @@ func ReadFileBuffer(path string, onProgress func(progress int)) ([]byte, os.File
 
 	defer file.Close()
 
-	var chunk []byte = make([]byte, 8)
+	var chunk []byte = make([]byte, GetBufferChunkSize(fileSize))
 
 	var readLengthTotal int = 0
 

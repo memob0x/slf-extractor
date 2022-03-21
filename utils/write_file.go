@@ -1,7 +1,6 @@
 package utils
 
 import (
-	"fmt"
 	"os"
 	"path/filepath"
 )
@@ -12,10 +11,6 @@ func WriteFile(name string, data []byte) (*os.File, error) {
 	}
 
 	file, err := os.Create(name)
-
-	if err != nil {
-		fmt.Println(err)
-	}
 
 	defer file.Close()
 

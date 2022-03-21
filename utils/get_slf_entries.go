@@ -21,13 +21,13 @@ func GetSlfBufferEntryInfos(bufferAreaEntriesInfos []byte, entryIndex int, buffe
 
 	pointer1 = pointer0 + INT_BUFFER_NUMBER_LENGTH
 
-	var dataSliceStart int = GetLittleEndianUnsignedInt32(bufferAreaEntriesInfos, pointer0, pointer1)
+	var dataSliceStart int = GetLittleEndianUnsignedInt32Int(bufferAreaEntriesInfos, pointer0, pointer1)
 
 	pointer0 = pointer1
 
 	pointer1 = pointer0 + INT_BUFFER_NUMBER_LENGTH
 
-	var dataSliceLength int = GetLittleEndianUnsignedInt32(bufferAreaEntriesInfos, pointer0, pointer1)
+	var dataSliceLength int = GetLittleEndianUnsignedInt32Int(bufferAreaEntriesInfos, pointer0, pointer1)
 
 	info.data = buffer[dataSliceStart : dataSliceStart+dataSliceLength]
 
@@ -38,7 +38,7 @@ func GetSlfBufferEntryInfos(bufferAreaEntriesInfos []byte, entryIndex int, buffe
 func GetSlfBufferEntries(buffer []byte) []entryInformation {
 	var infos []entryInformation = []entryInformation{}
 
-	var entriesCount int = GetLittleEndianUnsignedInt32(
+	var entriesCount int = GetLittleEndianUnsignedInt32Int(
 		buffer,
 
 		INT_SLF_BUFFER_OFFSET_START_ENTRIES_COUNT,
