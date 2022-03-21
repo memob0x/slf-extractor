@@ -1,14 +1,11 @@
 package utils
 
 import (
+	"io"
 	"os"
 )
 
-func GetBufferChunkSize(fileSize int) int {
-	return 700
-}
-
-func ReadFileBuffer(path string, onProgress func(progress int)) ([]byte, os.FileInfo, error) {
+func ReadFileBuffer(path string, chunkSize int, onProgress func(percentage float64)) ([]byte, os.FileInfo, error) {
 	var buffer = make([]byte, 0)
 	var err error
 
@@ -28,24 +25,26 @@ func ReadFileBuffer(path string, onProgress func(progress int)) ([]byte, os.File
 
 	defer file.Close()
 
-	var chunk []byte = make([]byte, GetBufferChunkSize(fileSize))
+	var chunk []byte = make([]byte, chunkSize)
 
 	var readLengthTotal int = 0
 
 	for {
-		readLengthPart, err := file.Read(chunk)
+		readLengthPart, readErr := file.Read(chunk)
 
-		readLengthTotal += readLengthPart
+		if readErr != io.EOF {
+			err = readErr
+		}
 
-		if err != nil {
+		if readErr != nil {
 			break
 		}
 
-		var percentage int = readLengthTotal / fileSize * 100
-
-		onProgress(percentage)
-
 		buffer = append(buffer, chunk[:readLengthPart]...)
+
+		readLengthTotal += readLengthPart
+
+		onProgress(float64(readLengthTotal) / float64(fileSize) * 100)
 	}
 
 	return buffer, stats, err

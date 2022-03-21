@@ -21,7 +21,7 @@ func TestGetSlfEntries(t *testing.T) {
 		},
 	}))
 
-	var buffer, _, _ = ReadFileBuffer("./bazz.slf", func(_ int) {})
+	var buffer, _, _ = ReadFileBuffer("./bazz.slf", 8, func(_ float64) {})
 
 	var entries = GetSlfBufferEntries(buffer)
 

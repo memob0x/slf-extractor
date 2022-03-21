@@ -1,5 +1,7 @@
 *.slf
 *.SLF
+*.wav
+*.gap
 slf-exporter
 slf-exporter-*
 __debug_bin

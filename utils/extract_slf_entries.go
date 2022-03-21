@@ -1,23 +1,30 @@
 package utils
 
 import (
+	"io/fs"
 	"log"
 	"os"
 )
 
 // TODO: better errors management
-func ExtractSlfEntries(slfPath string, destinationPath string, onProgress func(percentage int)) {
+func ExtractSlfEntries(slfPath string, destinationPath string, chunkSize int, onProgress func(perc float64)) (fs.FileInfo, error) {
 	if _, err := os.Stat(slfPath); os.IsNotExist(err) {
 		log.Fatal("Slf file does not exist.")
 	}
 
-	var buffer, _, _ = ReadFileBuffer(slfPath, onProgress)
+	var buffer, stats, err = ReadFileBuffer(slfPath, chunkSize, onProgress)
 
 	var entries []entryInformation = GetSlfBufferEntries(buffer)
 
 	for i, j := 0, len(entries); i < j; i++ {
 		var entry entryInformation = entries[i]
 
-		WriteFile(destinationPath+"/"+entry.name, entry.data)
+		_, err := WriteFile(destinationPath+"/"+entry.name, entry.data)
+
+		if err != nil {
+			return stats, err
+		}
 	}
+
+	return stats, err
 }

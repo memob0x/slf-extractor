@@ -16,6 +16,8 @@ func init() {
 
 	if argsCount >= 2 {
 		slfPath = os.Args[1]
+
+		fmt.Printf("Extraction of \"%v\" started.\n", slfPath)
 	} else {
 		fmt.Printf("No slf file specified, aborting.\n")
 
@@ -28,11 +30,24 @@ func init() {
 		fmt.Printf("No output folder specified, fallback to \"%v\".\n", destPath)
 	}
 
-	// TODO: output more informations about the extraction progress
+	// TODO: printf slf file size
+	// TODO: printf slf read time
+	// TODO: printf original slf name and path
 
-	utils.ExtractSlfEntries(slfPath, destPath, func(percentage int) {
-		fmt.Printf("%d%%\r", percentage)
-	})
+	utils.ExtractSlfEntries(
+		slfPath,
+
+		destPath,
+
+		1048576, // 1MB
+
+		func(percentage float64) {
+			fmt.Printf("Extraction: %v%%\r", utils.FormatFloat(percentage, 2))
+		},
+	)
+
+	// TODO: printf extracted files total size
+	// TODO: printf extracted files write time
 
 	fmt.Printf("Done.\n")
 }

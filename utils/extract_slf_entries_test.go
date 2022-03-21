@@ -21,7 +21,7 @@ func TestExtractSlfEntriesTest(t *testing.T) {
 		},
 	}))
 
-	ExtractSlfEntries("./FOOBAR.SLF", "./", func(perc int) {})
+	ExtractSlfEntries("./FOOBAR.SLF", "./", 8, func(_ float64) {})
 
 	_, err0 := os.Stat("FOOBAR.SLF")
 
