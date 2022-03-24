@@ -12,9 +12,7 @@ func WriteFile(name string, data []byte) (*os.File, error) {
 
 	file, err := os.Create(name)
 
-	defer file.Close()
-
-	file.Write(data)
+	_, err = file.Write(data)
 
 	return file, err
 }

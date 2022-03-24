@@ -22,7 +22,7 @@ func TestExtractSlfEntriesTest(t *testing.T) {
 		},
 	}))
 
-	ExtractSlfEntries("./FOOBAR.SLF", "./", 8, func(stats fs.FileInfo) {}, func(perc float64) {}, func(header SlfHeader) {}, func(file *os.File) {}, func(files []os.File) {})
+	ExtractSlfEntries("./FOOBAR.SLF", "./", 8, func(stats fs.FileInfo) {}, func(perc float64) {}, func(header SlfHeader) {}, func(file *os.File) {}, func(files []*os.File) {})
 
 	_, err0 := os.Stat("FOOBAR.SLF")
 

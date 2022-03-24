@@ -10,23 +10,25 @@ import (
 )
 
 func onStat(stats fs.FileInfo) {
-	fmt.Printf("Start extracting.\n")
-}
-
-func onReadComplete(header utils.SlfHeader) {
-	fmt.Printf("%v.\n", header)
+	fmt.Printf("Start extracting %v.\n", stats.Name())
 }
 
 func onReadProgress(percentage float64) {
-	fmt.Printf("\rExtracting: %v%%\r", utils.FormatFloat(percentage, 2))
+	fmt.Printf("\rReading progress: %v%%\r", utils.FormatFloat(percentage, 2))
 }
 
-func onWriteComplete(files []os.File) {
-	fmt.Printf("\nDone.\n")
+func onReadComplete(header utils.SlfHeader) {
+	fmt.Printf("Read complete %v.\n", header)
 }
 
 func onWriteProgress(file *os.File) {
-	fmt.Printf("Writing.%v\n", file.Name())
+	var s, _ = file.Stat()
+
+	fmt.Printf("Writing %v (%v)\n", file.Name(), utils.FormatBytes(s.Size()))
+}
+
+func onWriteComplete(files []*os.File) {
+	fmt.Printf("\nDone.\n")
 }
 
 func parseArgs() (string, string) {

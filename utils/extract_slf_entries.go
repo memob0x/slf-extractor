@@ -21,8 +21,8 @@ func ExtractSlfEntries(
 
 	onWriteProgress func(file *os.File),
 
-	onWriteComplete func(files []os.File),
-) (fs.FileInfo, []os.File, SlfHeader, error) {
+	onWriteComplete func(files []*os.File),
+) (fs.FileInfo, []*os.File, SlfHeader, error) {
 	if slfStats, err := os.Stat(slfPath); os.IsNotExist(err) {
 		return slfStats, nil, SlfHeader{}, err
 	}
@@ -43,20 +43,20 @@ func ExtractSlfEntries(
 
 	var entries []SlfEntry = GetSlfBufferEntries(buffer)
 
-	var writtenFiles []os.File
+	var writtenFiles []*os.File
 
 	for i, j := 0, len(entries); i < j; i++ {
 		var entry SlfEntry = entries[i]
 
 		writtenFile, err := WriteFile(destinationPath+"/"+entry.name, entry.data)
 
-		if err != nil {
+		if err != nil || writtenFile == nil {
 			return slfStats, nil, header, err
 		}
 
 		onWriteProgress(writtenFile)
 
-		writtenFiles = append(writtenFiles, *writtenFile)
+		writtenFiles = append(writtenFiles, writtenFile)
 	}
 
 	onWriteComplete(writtenFiles)
