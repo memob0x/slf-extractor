@@ -2,6 +2,7 @@
 *.SLF
 *.wav
 *.gap
+fyne-cross
 slf-exporter
 slf-exporter-*
 __debug_bin

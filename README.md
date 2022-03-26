@@ -16,6 +16,20 @@ Extract your copy of [Jagged Alliance 2](https://it.wikipedia.org/wiki/Jagged_Al
 
 An early version written in node (command-line only) is also [available](https://github.com/memob0x/slf-extractor/releases/tag/v0.1.0).
 
+## Dev
+
+To build the source without the gui
+
+```console
+./build.bash
+```
+
+To build the source with the gui
+
+```console
+./build.bash --with-gui
+```
+
 ## Credits
 
 Thanks to [Ja2-stracciatella](https://github.com/ja2-stracciatella).
