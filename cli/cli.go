@@ -6,7 +6,7 @@ import (
 	"log"
 	"os"
 
-	"github.com/memob0x/slf-exporter/utils"
+	"github.com/memob0x/slf-extractor/utils"
 )
 
 func onStat(stats fs.FileInfo) {

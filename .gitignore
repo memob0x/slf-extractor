@@ -1,8 +1,3 @@
-*.slf
-*.SLF
-*.wav
-*.gap
 fyne-cross
-slf-exporter
-slf-exporter-*
+fyne-build-cli
 __debug_bin

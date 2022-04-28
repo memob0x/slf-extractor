@@ -13,7 +13,7 @@ import (
 	"fyne.io/fyne/v2/layout"
 	"fyne.io/fyne/v2/storage"
 	"fyne.io/fyne/v2/widget"
-	"github.com/memob0x/slf-exporter/utils"
+	"github.com/memob0x/slf-extractor/utils"
 )
 
 type GuiStore struct {

@@ -3,7 +3,7 @@
 package main
 
 import (
-	"github.com/memob0x/slf-exporter/gui"
+	"github.com/memob0x/slf-extractor/gui"
 )
 
 func init() {

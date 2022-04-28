@@ -14,7 +14,7 @@ In [Jagged Alliance 2](https://it.wikipedia.org/wiki/Jagged_Alliance_2), and per
 [Download](https://github.com/memob0x/slf-extractor/releases) the latest version of the CLI application for your desktop environment and launch it with your preferred terminal emulator.
 
 ```console
-./slf-exporter-linux-adm64 ./FILE.slf ./dir
+./slf-extractor-cli-linux-adm64 ./file.slf ./dir
 ```
 
 ### Extra

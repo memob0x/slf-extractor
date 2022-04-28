@@ -1,4 +1,4 @@
-module github.com/memob0x/slf-exporter
+module github.com/memob0x/slf-extractor
 
 go 1.18
 

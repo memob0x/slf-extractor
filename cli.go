@@ -3,7 +3,7 @@
 package main
 
 import (
-	"github.com/memob0x/slf-exporter/cli"
+	"github.com/memob0x/slf-extractor/cli"
 )
 
 func init() {

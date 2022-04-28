@@ -17,7 +17,7 @@ function has_param() {
     done
 }
 
-package=github.com/memob0x/slf-exporter
+package=github.com/memob0x/slf-extractor
 
 package_split=(${package//\// })
 package_name=${package_split[-1]}
@@ -28,17 +28,19 @@ platforms=("linux/amd64" "darwin/amd64" "windows/amd64")
 # cleanup
 if compgen -G "fyne-cross" > /dev/null;
 then
-	echo "clean previous fyne build folder"
+	echo "clean previous gui build folder"
 
 	rm -r fyne-cross
 fi
 
-if compgen -G "slf-exporter-*" > /dev/null;
+if compgen -G "fyne-build-cli" > /dev/null;
 then
-	echo "clean previous build files"
+	echo "clean previous cli build files"
 
-	rm slf-exporter*
-fi 
+	rm -r fyne-build-cli
+fi
+
+mkdir fyne-build-cli
 
 for platform in "${platforms[@]}"
 do
@@ -48,20 +50,22 @@ do
 	
 	GOARCH=${platform_split[1]}
 
+	output_name_gui=$package_name'-gui-'$GOOS'-'$GOARCH
+
 	# FIXME: darwin (osx) gui build needs special passages https://github.com/fyne-io/fyne-cross#build_darwin_image
 	if [[ -n $(has_param "-h --with-gui" "$@") ]];
 	then
- 		fyne-cross $GOOS --pull -arch=$GOARCH -app-id slf-exporter -tags=gui -icon assets/icon.png
+ 		fyne-cross $GOOS --pull -arch=$GOARCH -app-id slf-extractor -tags=gui -icon assets/icon.png -output $output_name_gui
 	fi
 
-	output_name=$package_name'-cli-'$GOOS'-'$GOARCH
+	output_name_cli=$package_name'-cli-'$GOOS'-'$GOARCH
 
 	if [ $GOOS = "windows" ];
 	then
-		output_name+='.exe'
+		output_name_cli+='.exe'
 	fi
 
-	env GOOS=$GOOS GOARCH=$GOARCH go build -tags=cli -o $output_name $package
+	env GOOS=$GOOS GOARCH=$GOARCH go build -tags=cli -o fyne-build-cli/$output_name_cli $package
 
 	if [ $? -ne 0 ];
 	then
