@@ -17,14 +17,24 @@ jobs:
         with:
           go-version: 1.18
 
-      - name: Test Utils
-        run: go test -v ./utils/...
-
       - name: Build CLI
         run: ./build.bash
         
       - name: Install fyne
-        run: go get -u github.com/fyne-io/fyne-cross
+        run: go get -v github.com/fyne-io/fyne-cross
 
       - name: Build GUI
         run: ./build.bash --with-gui
+
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Set up Go
+        uses: actions/setup-go@v2
+        with:
+          go-version: 1.18
+
+      - name: Test Utils
+        run: go test -v ./utils/...
