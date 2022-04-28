@@ -7,7 +7,5 @@ import (
 )
 
 func init() {
-	global.id = INT_ID_BUILD_CLI
-
 	global.CreateApp = cli.CreateApp
 }

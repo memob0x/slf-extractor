@@ -4,9 +4,14 @@ In [Jagged Alliance 2](https://it.wikipedia.org/wiki/Jagged_Alliance_2), and per
 
 ## Usage
 
+### GUI
+[Download](https://github.com/memob0x/slf-extractor/releases) the latest version of the GUI application for your desktop environment and launch it with double click.
+
+![gui](https://github.com/memob0x/slf-extractor/blob/master/assets/screenshot.png?raw=true)
+
 ### CLI
 
-[Download](https://github.com/memob0x/slf-extractor/releases) the latest version of the standalone CLI and launch it.
+[Download](https://github.com/memob0x/slf-extractor/releases) the latest version of the CLI application for your desktop environment and launch it with your preferred terminal emulator.
 
 ```console
 ./slf-exporter-linux-adm64 ./FILE.slf ./dir

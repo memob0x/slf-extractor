@@ -7,7 +7,5 @@ import (
 )
 
 func init() {
-	global.id = INT_ID_BUILD_GUI
-
 	global.CreateApp = gui.CreateApp
 }
