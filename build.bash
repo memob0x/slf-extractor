@@ -51,18 +51,18 @@ do
 	GOARCH=${platform_split[1]}
 
 	output_name_gui=$package_name'-gui-'$GOOS'-'$GOARCH
+	output_name_cli=$package_name'-cli-'$GOOS'-'$GOARCH
+
+	if [ $GOOS = "windows" ];
+	then
+		output_name_gui+='.exe'
+		output_name_cli+='.exe'
+	fi
 
 	# FIXME: darwin (osx) gui build needs special passages https://github.com/fyne-io/fyne-cross#build_darwin_image
 	if [[ -n $(has_param "-h --with-gui" "$@") ]];
 	then
  		fyne-cross $GOOS --pull -arch=$GOARCH -app-id slf-extractor -tags=gui -icon assets/icon.png -output $output_name_gui
-	fi
-
-	output_name_cli=$package_name'-cli-'$GOOS'-'$GOARCH
-
-	if [ $GOOS = "windows" ];
-	then
-		output_name_cli+='.exe'
 	fi
 
 	env GOOS=$GOOS GOARCH=$GOARCH go build -tags=cli -o fyne-build-cli/$output_name_cli $package
