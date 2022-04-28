@@ -21,7 +21,7 @@ jobs:
         run: go test -v ./utils/...
 
       - name: Build CLI
-        run: ./build.sh
+        run: ./build.bash
 
       - name: Build GUI
-        run: ./build.sh --with-gui
+        run: ./build.bash --with-gui
