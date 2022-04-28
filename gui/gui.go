@@ -1,29 +1,37 @@
 package gui
 
 import (
+	"io/fs"
+	"os"
+	"strings"
+
 	"fyne.io/fyne/v2"
+	"fyne.io/fyne/v2/app"
 	"fyne.io/fyne/v2/container"
 	"fyne.io/fyne/v2/data/binding"
 	"fyne.io/fyne/v2/dialog"
 	"fyne.io/fyne/v2/layout"
 	"fyne.io/fyne/v2/storage"
 	"fyne.io/fyne/v2/widget"
+	"github.com/memob0x/slf-exporter/utils"
 )
 
-type gui struct {
-	app fyne.App
+type GuiStore struct {
+	App fyne.App
 
-	entries binding.StringList
+	Path string
 
-	list *widget.List
+	Entries binding.StringList
 
-	buttonReadEntries *widget.Button
+	List *widget.List
 
-	buttonWriteEntries *widget.Button
+	ButtonReadEntries *widget.Button
+
+	ButtonWriteEntries *widget.Button
 }
 
-func (instance *gui) Render(app fyne.App) {
-	instance.app = app
+func (instance *GuiStore) Render(app fyne.App) {
+	instance.App = app
 
 	var window fyne.Window = app.NewWindow("Slf Exporter")
 
@@ -33,9 +41,9 @@ func (instance *gui) Render(app fyne.App) {
 		container.New(
 			layout.NewVBoxLayout(),
 
-			instance.buttonReadEntries,
+			instance.ButtonReadEntries,
 
-			instance.buttonWriteEntries,
+			instance.ButtonWriteEntries,
 		),
 
 		nil,
@@ -44,7 +52,7 @@ func (instance *gui) Render(app fyne.App) {
 
 		nil,
 
-		instance.list,
+		instance.List,
 	)
 
 	instance.Refresh()
@@ -54,20 +62,17 @@ func (instance *gui) Render(app fyne.App) {
 	window.Show()
 }
 
-func (instance *gui) WriteSlfFileEntriesFiles() {
-	// TODO: actual writing of entries
-	// TODO: clear/reset gui
-
-	instance.Refresh()
-}
-
-func (instance *gui) RenderSlfFileChooser() {
-	var window fyne.Window = instance.app.NewWindow("Slf Exporter: file chooser")
+func (instance *GuiStore) RenderSlfFileChooser() {
+	var window fyne.Window = instance.App.NewWindow("Slf Exporter: file chooser")
 
 	window.Resize(fyne.NewSize(420, 260))
 
-	var fileChooser *dialog.FileDialog = dialog.NewFileOpen(func(fyne.URIReadCloser, error) {
+	var fileChooser *dialog.FileDialog = dialog.NewFileOpen(func(file fyne.URIReadCloser, err error) {
+		instance.Path = file.URI().Path()
 
+		window.Close()
+
+		instance.Refresh()
 	}, window)
 
 	fileChooser.SetFilter(storage.NewExtensionFileFilter([]string{".slf"}))
@@ -77,32 +82,65 @@ func (instance *gui) RenderSlfFileChooser() {
 	fileChooser.Show()
 }
 
-func (instance *gui) Refresh() {
-	// if file ok
-	// TODO: display list
-	// TODO: enable "write" button
-
-	// if file not ok
-	// TODO: display error with "x" button
-
-	instance.entries.Set([]string{"hello"})
-
-	instance.buttonReadEntries.OnTapped = func() {
-		// TODO: hide former errors
-
-		instance.RenderSlfFileChooser()
-	}
-
-	instance.buttonReadEntries.Refresh()
+func (instance *GuiStore) HasPath() bool {
+	return len(strings.Trim(instance.Path, " ")) > 0
 }
 
-func Gui() *gui {
+func (instance *GuiStore) Export() {
+	if instance.Entries.Length() <= 0 {
+		return
+	}
+
+	var _, _, _, err = utils.ExtractSlfEntries(instance.Path, ".", 8, func(stats fs.FileInfo) {}, func(perc float64) {}, func(header utils.SlfHeader) {}, func(file *os.File) {}, func(files []*os.File) {})
+
+	if err != nil {
+		// TODO: error message
+
+		return
+	}
+
+	// TODO: success message
+
+	instance.Path = ""
+
+	instance.Refresh()
+}
+
+func (instance *GuiStore) Refresh() error {
+	instance.Entries.Set([]string{})
+
+	instance.ButtonWriteEntries.Disable()
+
+	if !instance.HasPath() {
+		return nil
+	}
+
+	var entries, _, _, err = utils.ReadSlfFile(instance.Path, 8, func(stats fs.FileInfo) {}, func(perc float64) {}, func(header utils.SlfHeader) {})
+
+	if err != nil {
+		// TODO: display errors
+
+		return err
+	}
+
+	for i, j := 0, len(entries); i < j; i++ {
+		var entry utils.SlfEntry = entries[i]
+
+		instance.Entries.Append(entry.Name)
+	}
+
+	instance.ButtonWriteEntries.Enable()
+
+	return nil
+}
+
+func CreateGui() *GuiStore {
 	var entries = binding.NewStringList()
 
-	return &gui{
-		entries: entries,
+	var instance = &GuiStore{
+		Entries: entries,
 
-		list: widget.NewListWithData(
+		List: widget.NewListWithData(
 			entries,
 
 			func() fyne.CanvasObject {
@@ -114,8 +152,28 @@ func Gui() *gui {
 			},
 		),
 
-		buttonReadEntries: widget.NewButton("Read", nil),
+		ButtonReadEntries: widget.NewButton("Open", nil),
 
-		buttonWriteEntries: widget.NewButton("Export", nil),
+		ButtonWriteEntries: widget.NewButton("Export", nil),
 	}
+
+	instance.ButtonWriteEntries.OnTapped = instance.Export
+
+	instance.ButtonReadEntries.OnTapped = func() {
+		// TODO: hide displayed errors
+
+		instance.RenderSlfFileChooser()
+	}
+
+	return instance
+}
+
+func CreateApp() {
+	var fyne = app.New()
+
+	var gui = CreateGui()
+
+	gui.Render(fyne)
+
+	fyne.Run()
 }

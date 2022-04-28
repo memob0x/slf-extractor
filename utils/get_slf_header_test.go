@@ -11,14 +11,14 @@ import (
 func TestGetSlfHeader(t *testing.T) {
 	WriteFile("bizz.slf", CreateSlfBuffer("original-name.slf", "./original/path", []SlfEntry{
 		{
-			name: "first.txt",
+			Name: "first.txt",
 
-			data: []byte("foo"),
+			Data: []byte("foo"),
 		},
 		{
-			name: "second.txt",
+			Name: "second.txt",
 
-			data: []byte("bar"),
+			Data: []byte("bar"),
 		},
 	}))
 
@@ -26,8 +26,8 @@ func TestGetSlfHeader(t *testing.T) {
 
 	var header, _ = GetSlfHeader(buffer)
 
-	assert.Equal(t, "original-name.slf", header.originalName, "should be able to read original slf file name")
-	assert.Equal(t, "./original/path", header.originalPath, "should be able to read original slf file path (relative do original installation path \"Data\" folder")
+	assert.Equal(t, "original-name.slf", header.OriginalName, "should be able to read original slf file name")
+	assert.Equal(t, "./original/path", header.OriginalPath, "should be able to read original slf file path (relative do original installation path \"Data\" folder")
 
 	os.Remove("bizz.slf")
 }

@@ -1,6 +1,6 @@
 # SLF extractor
 
-Extract your copy of [Jagged Alliance 2](https://it.wikipedia.org/wiki/Jagged_Alliance_2) (and perhaps any [Sir-Tech](https://en.wikipedia.org/wiki/Sir-Tech) game?) resources (sounds, textures...).
+In [Jagged Alliance 2](https://it.wikipedia.org/wiki/Jagged_Alliance_2), and perhaps in any [Sir-Tech](https://en.wikipedia.org/wiki/Sir-Tech) game installation folder, the resources files (textures, sounds...) are located in a folder called "Data", but they're all bundled in a proprietary file-format with "slf" extension, thus the game real assets are inacessible; this application aims to browse and export those assets.
 
 ## Usage
 
@@ -18,16 +18,22 @@ An early version written in node (command-line only) is also [available](https:/
 
 ## Dev
 
-To build the source without the gui
+To build the cli application
 
 ```console
 ./build.bash
 ```
 
-To build the source with the gui
+To build the gui application
 
 ```console
 ./build.bash --with-gui
+```
+
+To test the source utilities
+
+```console
+go test -v ./utils
 ```
 
 ## Credits

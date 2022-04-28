@@ -8,17 +8,17 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestGetSlfEntries(t *testing.T) {
+func TestGetSlfBufferEntries(t *testing.T) {
 	WriteFile("bazz.slf", CreateSlfBuffer("bazz.slf", ".", []SlfEntry{
 		{
-			name: "first.txt",
+			Name: "first.txt",
 
-			data: []byte("foo"),
+			Data: []byte("foo"),
 		},
 		{
-			name: "second.txt",
+			Name: "second.txt",
 
-			data: []byte("bar"),
+			Data: []byte("bar"),
 		},
 	}))
 
@@ -33,9 +33,9 @@ func TestGetSlfEntries(t *testing.T) {
 	for i := 0; i < entriesCount; i++ {
 		var entry SlfEntry = entries[i]
 
-		assert.IsTypef(t, string(""), entry.name, "should have a string \"name\" member")
+		assert.IsTypef(t, string(""), entry.Name, "should have a string \"name\" member")
 
-		assert.IsTypef(t, []byte{}, entry.data, "should have a bytes array \"data\" member")
+		assert.IsTypef(t, []byte{}, entry.Data, "should have a bytes array \"data\" member")
 	}
 
 	os.Remove("bazz.slf")

@@ -6,9 +6,9 @@ import (
 )
 
 type SlfHeader struct {
-	originalName string
+	OriginalName string
 
-	originalPath string
+	OriginalPath string
 }
 
 // Retrieves the main header informations from a buffer: the original slf file name and path.
@@ -27,12 +27,12 @@ func GetSlfHeader(buffer []byte) (SlfHeader, error) {
 		err = errors.New("not a valid slf file")
 	}
 
-	header.originalName = originalSlfName
+	header.OriginalName = originalSlfName
 
 	pointer0 = pointer1
 	pointer1 = pointer0 + INT_BUFFER_STRING_LENGTH
 
-	header.originalPath = SanitizeStringFilename(string(buffer[pointer0:pointer1]))
+	header.OriginalPath = SanitizeStringFilename(string(buffer[pointer0:pointer1]))
 
 	return header, err
 }

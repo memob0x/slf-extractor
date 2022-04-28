@@ -53,7 +53,7 @@ func parseArgs() (string, string) {
 	return slfPath, destPath
 }
 
-func init() {
+func CreateApp() {
 	var slfPath, destPath = parseArgs()
 
 	var stat, _, _, err = utils.ExtractSlfEntries(

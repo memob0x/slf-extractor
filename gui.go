@@ -3,5 +3,11 @@
 package main
 
 import (
-	_ "github.com/memob0x/slf-exporter/gui"
+	"github.com/memob0x/slf-exporter/gui"
 )
+
+func init() {
+	global.id = INT_ID_BUILD_GUI
+
+	global.CreateApp = gui.CreateApp
+}

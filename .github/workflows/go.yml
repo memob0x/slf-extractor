@@ -17,11 +17,11 @@ jobs:
         with:
           go-version: 1.18
 
-      - name: Build Utils
-        run: go build -v ./utils/...
-
-      - name: Build CLI
-        run: go build -v ./cli/...
-
       - name: Test Utils
         run: go test -v ./utils/...
+
+      - name: Build CLI
+        run: ./build.sh
+
+      - name: Build GUI
+        run: ./build.sh --with-gui

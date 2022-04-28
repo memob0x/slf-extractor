@@ -11,14 +11,14 @@ import (
 func TestExtractSlfEntriesTest(t *testing.T) {
 	WriteFile("FOOBAR.SLF", CreateSlfBuffer("FOOBAR.SLF", ".", []SlfEntry{
 		{
-			name: "first.txt",
+			Name: "first.txt",
 
-			data: []byte("foo"),
+			Data: []byte("foo"),
 		},
 		{
-			name: "second.txt",
+			Name: "second.txt",
 
-			data: []byte("bar"),
+			Data: []byte("bar"),
 		},
 	}))
 

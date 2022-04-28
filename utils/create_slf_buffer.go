@@ -60,11 +60,11 @@ func CreateSlfBuffer(name string, path string, entries []SlfEntry) []byte {
 	for i := 0; i < entriesCount; i++ {
 		var entry SlfEntry = entries[i]
 
-		buffer = append(buffer, entry.data...)
+		buffer = append(buffer, entry.Data...)
 
-		var entryDataSize int = len(entry.data)
+		var entryDataSize int = len(entry.Data)
 
-		bufferEntriesInfos = append(bufferEntriesInfos, createSlfBufferEntry(entry.name, entryOffset, entryDataSize)...)
+		bufferEntriesInfos = append(bufferEntriesInfos, createSlfBufferEntry(entry.Name, entryOffset, entryDataSize)...)
 
 		entryOffset += entryDataSize
 	}

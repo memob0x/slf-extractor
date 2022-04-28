@@ -3,9 +3,9 @@ package utils
 // NOTE: see SLF.md
 
 type SlfEntry struct {
-	name string
+	Name string
 
-	data []byte
+	Data []byte
 }
 
 func getSlfBufferEntryInfos(bufferAreaEntriesInfos []byte, entryIndex int, buffer []byte) SlfEntry {
@@ -15,7 +15,7 @@ func getSlfBufferEntryInfos(bufferAreaEntriesInfos []byte, entryIndex int, buffe
 
 	var pointer1 int = pointer0 + INT_BUFFER_STRING_LENGTH
 
-	info.name = SanitizeStringFilename(string(bufferAreaEntriesInfos[pointer0:pointer1]))
+	info.Name = SanitizeStringFilename(string(bufferAreaEntriesInfos[pointer0:pointer1]))
 
 	pointer0 = pointer1
 
@@ -29,7 +29,7 @@ func getSlfBufferEntryInfos(bufferAreaEntriesInfos []byte, entryIndex int, buffe
 
 	var dataSliceLength int = GetLittleEndianUnsignedInt32Int(bufferAreaEntriesInfos, pointer0, pointer1)
 
-	info.data = buffer[dataSliceStart : dataSliceStart+dataSliceLength]
+	info.Data = buffer[dataSliceStart : dataSliceStart+dataSliceLength]
 
 	return info
 }
