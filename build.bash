@@ -26,8 +26,19 @@ package_name=${package_split[-1]}
 platforms=("linux/amd64" "darwin/amd64" "windows/amd64")
 
 # cleanup
-rm -r fyne-cross
-rm slf-exporter*
+if compgen -G "fyne-cross" > /dev/null;
+then
+	echo "clean previous fyne build folder"
+
+	rm -r fyne-cross
+fi
+
+if compgen -G "slf-exporter-*" > /dev/null;
+then
+	echo "clean previous build files"
+
+	rm slf-exporter*
+fi 
 
 for platform in "${platforms[@]}"
 do
@@ -40,7 +51,7 @@ do
 	# FIXME: darwin (osx) gui build needs special passages https://github.com/fyne-io/fyne-cross#build_darwin_image
 	if [[ -n $(has_param "-h --with-gui" "$@") ]];
 	then
- 		fyne-cross $GOOS --pull -arch=$GOARCH -app-id slf-exporter -tags=gui
+ 		../../../../bin/fyne-cross $GOOS --pull -arch=$GOARCH -app-id slf-exporter -tags=gui
 	fi
 
 	output_name=$package_name'-cli-'$GOOS'-'$GOARCH
