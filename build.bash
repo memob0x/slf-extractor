@@ -51,7 +51,7 @@ do
 	# FIXME: darwin (osx) gui build needs special passages https://github.com/fyne-io/fyne-cross#build_darwin_image
 	if [[ -n $(has_param "-h --with-gui" "$@") ]];
 	then
- 		../../../../bin/fyne-cross $GOOS --pull -arch=$GOARCH -app-id slf-exporter -tags=gui
+ 		fyne-cross $GOOS --pull -arch=$GOARCH -app-id slf-exporter -tags=gui
 	fi
 
 	output_name=$package_name'-cli-'$GOOS'-'$GOARCH
