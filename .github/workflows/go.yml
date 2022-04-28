@@ -21,7 +21,7 @@ jobs:
         run: ./build.bash
         
       - name: Install fyne
-        run: go get -v github.com/fyne-io/fyne-cross && cp /opt/hostedtoolcache/go/1.18.1/x64/fyne-cross /usr/bin/
+        run: go get -v github.com/fyne-io/fyne-cross && cp /opt/hostedtoolcache/go/1.18.1/x64/bin/fyne-cross /usr/bin/
 
       - name: Build GUI
         run: ./build.bash --with-gui
