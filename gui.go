@@ -7,5 +7,5 @@ import (
 )
 
 func init() {
-	global.CreateApp = gui.CreateApp
+	onMain = gui.Launch
 }

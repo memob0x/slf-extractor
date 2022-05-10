@@ -16,34 +16,49 @@ import (
 	"github.com/memob0x/slf-extractor/utils"
 )
 
-type GuiStore struct {
+const LABEL_BUTTON_FILE_BROWSER_DEFAULT = "(None selected)"
+const LABEL_TITLE_MAIN_WINDOW = "Slf Exporter"
+
+type Store struct {
 	App fyne.App
 
-	Path string
+	SlfPath string
+
+	DestinationPath string
 
 	Entries binding.StringList
 
 	List *widget.List
 
-	ButtonReadEntries *widget.Button
+	ButtonSlfFile *widget.Button
 
-	ButtonWriteEntries *widget.Button
+	ButtonDestinationPath *widget.Button
+
+	ButtonExport *widget.Button
 }
 
-func (instance *GuiStore) Render(app fyne.App) {
-	instance.App = app
-
-	var window fyne.Window = app.NewWindow("Slf Exporter")
-
-	window.Resize(fyne.NewSize(420, 260))
-
-	var windowContent *fyne.Container = container.NewBorder(
+func (instance *Store) GetMainContent() *fyne.Container {
+	return container.NewBorder(
 		container.New(
-			layout.NewVBoxLayout(),
+			layout.NewAdaptiveGridLayout(3),
 
-			instance.ButtonReadEntries,
+			container.New(
+				layout.NewVBoxLayout(),
 
-			instance.ButtonWriteEntries,
+				widget.NewLabel("Slf file:"),
+
+				instance.ButtonSlfFile,
+			),
+
+			container.New(
+				layout.NewVBoxLayout(),
+
+				widget.NewLabel("Extraction folder:"),
+
+				instance.ButtonDestinationPath,
+			),
+
+			instance.ButtonExport,
 		),
 
 		nil,
@@ -54,44 +69,112 @@ func (instance *GuiStore) Render(app fyne.App) {
 
 		instance.List,
 	)
+}
+
+func (instance *Store) Render(app fyne.App) {
+	instance.App = app
+
+	var window fyne.Window = app.NewWindow(LABEL_TITLE_MAIN_WINDOW)
+
+	window.Resize(fyne.NewSize(420, 260))
+
+	window.SetContent(instance.GetMainContent())
 
 	instance.Refresh()
-
-	window.SetContent(windowContent)
 
 	window.Show()
 }
 
-func (instance *GuiStore) RenderSlfFileChooser() {
-	var window fyne.Window = instance.App.NewWindow("Slf Exporter: file chooser")
+type BrowserDialogType int64
 
-	window.Resize(fyne.NewSize(420, 260))
+const (
+	BrowserDialogTypeFolder BrowserDialogType = iota
 
-	var fileChooser *dialog.FileDialog = dialog.NewFileOpen(func(file fyne.URIReadCloser, err error) {
-		instance.Path = file.URI().Path()
+	BrowserDialogypeSlf
+)
 
+func (instance *Store) RenderFileBrowserDialog(dialogType BrowserDialogType) {
+	var window fyne.Window = instance.App.NewWindow(LABEL_TITLE_MAIN_WINDOW + ": file browser")
+
+	window.Resize(fyne.NewSize(720, 576))
+
+	var fileChooser *dialog.FileDialog
+
+	var onSelection = func() {
 		window.Close()
 
 		instance.Refresh()
-	}, window)
+	}
 
-	fileChooser.SetFilter(storage.NewExtensionFileFilter([]string{".slf"}))
+	switch dialogType {
+
+	case BrowserDialogTypeFolder:
+		fileChooser = dialog.NewFolderOpen(func(selection fyne.ListableURI, err error) {
+			if selection != nil {
+				instance.DestinationPath = selection.Path()
+			}
+
+			onSelection()
+		}, window)
+
+		break
+
+	case BrowserDialogypeSlf:
+		fileChooser = dialog.NewFileOpen(func(selection fyne.URIReadCloser, err error) {
+			if selection != nil {
+				instance.SlfPath = selection.URI().Path()
+			}
+
+			onSelection()
+		}, window)
+
+		fileChooser.SetFilter(storage.NewExtensionFileFilter([]string{".slf"}))
+
+		break
+
+	default:
+		return
+	}
 
 	window.Show()
 
 	fileChooser.Show()
 }
 
-func (instance *GuiStore) HasPath() bool {
-	return len(strings.Trim(instance.Path, " ")) > 0
+func IsValidString(str string) bool {
+	return len(strings.Trim(str, " ")) > 0
 }
 
-func (instance *GuiStore) Export() {
+func (instance *Store) HasSlfPath() bool {
+	return IsValidString(instance.SlfPath)
+}
+
+func (instance *Store) HasDestinationPath() bool {
+	return IsValidString(instance.DestinationPath)
+}
+
+func (instance *Store) Export() {
 	if instance.Entries.Length() <= 0 {
 		return
 	}
 
-	var _, _, _, err = utils.ExtractSlfEntries(instance.Path, ".", 8, func(stats fs.FileInfo) {}, func(perc float64) {}, func(header utils.SlfHeader) {}, func(file *os.File) {}, func(files []*os.File) {})
+	var _, _, _, err = utils.ExtractSlfEntries(
+		instance.SlfPath,
+
+		instance.DestinationPath,
+
+		8,
+
+		func(stats fs.FileInfo) {},
+
+		func(perc float64) {},
+
+		func(header utils.SlfHeader) {},
+
+		func(file *os.File) {},
+
+		func(files []*os.File) {},
+	)
 
 	if err != nil {
 		// TODO: error message
@@ -101,24 +184,88 @@ func (instance *GuiStore) Export() {
 
 	// TODO: success message
 
-	instance.Path = ""
+	instance.SlfPath = ""
 
 	instance.Refresh()
 }
 
-func (instance *GuiStore) Refresh() error {
+func (instance *Store) HasEntries() bool {
+	return instance.Entries.Length() > 0
+}
+
+func (instance *Store) UpdateButtonSlfFileLabel() {
+	instance.ButtonSlfFile.Text = LABEL_BUTTON_FILE_BROWSER_DEFAULT
+
+	if instance.HasSlfPath() {
+		instance.ButtonSlfFile.Text = instance.SlfPath
+	}
+}
+
+func (instance *Store) UpdateButtonDestinationPathLabel() {
+	instance.ButtonDestinationPath.Text = LABEL_BUTTON_FILE_BROWSER_DEFAULT
+
+	if !instance.HasDestinationPath() {
+		return
+	}
+
+	var label string = instance.DestinationPath
+
+	if label == "." {
+		label = "(Current folder)"
+	}
+
+	instance.ButtonDestinationPath.Text = label
+}
+
+func (instance *Store) CanExport() bool {
+	return instance.HasSlfPath() && instance.HasDestinationPath() && instance.HasEntries()
+}
+
+func (instance *Store) UpdateButtonExportState() {
+	instance.ButtonExport.Disable()
+
+	if instance.CanExport() {
+		instance.ButtonExport.Enable()
+	}
+}
+
+func (instance *Store) RefreshButtons() error {
+	instance.UpdateButtonSlfFileLabel()
+
+	instance.UpdateButtonDestinationPathLabel()
+
+	instance.UpdateButtonExportState()
+
+	instance.ButtonSlfFile.Refresh()
+
+	instance.ButtonDestinationPath.Refresh()
+
+	instance.ButtonExport.Refresh()
+
+	return nil
+}
+
+func (instance *Store) RefreshEntries() error {
 	instance.Entries.Set([]string{})
 
-	instance.ButtonWriteEntries.Disable()
-
-	if !instance.HasPath() {
+	if !instance.HasSlfPath() {
 		return nil
 	}
 
-	var entries, _, _, err = utils.ReadSlfFile(instance.Path, 8, func(stats fs.FileInfo) {}, func(perc float64) {}, func(header utils.SlfHeader) {})
+	var entries, _, _, err = utils.ReadSlfFile(
+		instance.SlfPath,
+
+		8,
+
+		func(stats fs.FileInfo) {},
+
+		func(perc float64) {},
+
+		func(header utils.SlfHeader) {},
+	)
 
 	if err != nil {
-		// TODO: display errors
+		// TODO: display error message
 
 		return err
 	}
@@ -129,22 +276,38 @@ func (instance *GuiStore) Refresh() error {
 		instance.Entries.Append(entry.Name)
 	}
 
-	instance.ButtonWriteEntries.Enable()
+	return nil
+}
+
+func (instance *Store) Refresh() error {
+	var err error = instance.RefreshEntries()
+
+	if err != nil {
+		return err
+	}
+
+	err = instance.RefreshButtons()
+
+	if err != nil {
+		return err
+	}
 
 	return nil
 }
 
-func CreateGui() *GuiStore {
+func New() *Store {
 	var entries = binding.NewStringList()
 
-	var instance = &GuiStore{
+	var instance = &Store{
+		DestinationPath: ".",
+
 		Entries: entries,
 
 		List: widget.NewListWithData(
 			entries,
 
 			func() fyne.CanvasObject {
-				return widget.NewLabel("template")
+				return widget.NewLabel("")
 			},
 
 			func(i binding.DataItem, o fyne.CanvasObject) {
@@ -152,26 +315,32 @@ func CreateGui() *GuiStore {
 			},
 		),
 
-		ButtonReadEntries: widget.NewButton("Open", nil),
+		ButtonSlfFile: widget.NewButton("", nil),
 
-		ButtonWriteEntries: widget.NewButton("Export", nil),
+		ButtonDestinationPath: widget.NewButton("", nil),
+
+		ButtonExport: widget.NewButton("Export", nil),
 	}
 
-	instance.ButtonWriteEntries.OnTapped = instance.Export
+	instance.ButtonSlfFile.OnTapped = func() {
+		// TODO: hide displayed error messages
 
-	instance.ButtonReadEntries.OnTapped = func() {
-		// TODO: hide displayed errors
-
-		instance.RenderSlfFileChooser()
+		instance.RenderFileBrowserDialog(BrowserDialogypeSlf)
 	}
+
+	instance.ButtonDestinationPath.OnTapped = func() {
+		instance.RenderFileBrowserDialog(BrowserDialogTypeFolder)
+	}
+
+	instance.ButtonExport.OnTapped = instance.Export
 
 	return instance
 }
 
-func CreateApp() {
+func Launch() {
 	var fyne = app.New()
 
-	var gui = CreateGui()
+	var gui = New()
 
 	gui.Render(fyne)
 

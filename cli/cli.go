@@ -9,29 +9,7 @@ import (
 	"github.com/memob0x/slf-extractor/utils"
 )
 
-func onStat(stats fs.FileInfo) {
-	fmt.Printf("Start extracting %v.\n", stats.Name())
-}
-
-func onReadProgress(percentage float64) {
-	fmt.Printf("\rReading progress: %v%%\r", utils.FormatFloat(percentage, 2))
-}
-
-func onReadComplete(header utils.SlfHeader) {
-	fmt.Printf("Read complete %v.\n", header)
-}
-
-func onWriteProgress(file *os.File) {
-	var s, _ = file.Stat()
-
-	fmt.Printf("Writing %v (%v)\n", file.Name(), utils.FormatBytes(s.Size()))
-}
-
-func onWriteComplete(files []*os.File) {
-	fmt.Printf("\nDone.\n")
-}
-
-func parseArgs() (string, string) {
+func ParseArgs() (string, string) {
 	var argsCount = len(os.Args)
 
 	var slfPath string
@@ -53,8 +31,8 @@ func parseArgs() (string, string) {
 	return slfPath, destPath
 }
 
-func CreateApp() {
-	var slfPath, destPath = parseArgs()
+func Launch() {
+	var slfPath, destPath = ParseArgs()
 
 	var stat, _, _, err = utils.ExtractSlfEntries(
 		slfPath,
@@ -63,15 +41,27 @@ func CreateApp() {
 
 		1048576, // 1MB
 
-		onStat,
+		func(stats fs.FileInfo) {
+			fmt.Printf("Start extracting %v.\n", stats.Name())
+		},
 
-		onReadProgress,
+		func(perc float64) {
+			fmt.Printf("\rReading progress: %v%%\r", utils.FormatFloat(perc, 2))
+		},
 
-		onReadComplete,
+		func(header utils.SlfHeader) {
+			fmt.Printf("Read complete %v.\n", header)
+		},
 
-		onWriteProgress,
+		func(file *os.File) {
+			var s, _ = file.Stat()
 
-		onWriteComplete,
+			fmt.Printf("Writing %v (%v)\n", file.Name(), utils.FormatBytes(s.Size()))
+		},
+
+		func(files []*os.File) {
+			fmt.Printf("\nDone.\n")
+		},
 	)
 
 	if stat == nil {

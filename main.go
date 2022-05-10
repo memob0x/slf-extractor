@@ -1,9 +1,7 @@
 package main
 
-var global struct {
-	CreateApp func()
-}
+var onMain = func() {}
 
 func main() {
-	global.CreateApp()
+	onMain()
 }

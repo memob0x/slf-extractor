@@ -7,5 +7,5 @@ import (
 )
 
 func init() {
-	global.CreateApp = cli.CreateApp
+	onMain = cli.Launch
 }
