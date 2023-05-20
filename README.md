@@ -31,6 +31,16 @@ To build the cli application
 
 To build the gui application
 
+[Docker](https://docs.docker.com/engine/install/ubuntu/#install-using-the-repository) is needed in order to use gui build tools.
+
+```console
+sudo /etc/init.d/docker start
+```
+
+```console
+go install github.com/fyne-io/fyne-cross@latest
+```
+
 ```console
 ./build.bash --with-gui
 ```
