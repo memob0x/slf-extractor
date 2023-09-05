@@ -1,5 +1,7 @@
 # SLF extractor
 
+[![CI](https://github.com/memob0x/slf-extractor/workflows/Go/badge.svg)](https://github.com/memob0x/slf-extractor/actions?query=workflow%3AGo) [![Go Report Card](https://goreportcard.com/badge/github.com/memob0x/slf-extractor)](https://goreportcard.com/report/github.com/memob0x/slf-extractor) [![GoDoc](https://godoc.org/github.com/memob0x/slf-extractor?status.svg)](http://godoc.org/github.com/memob0x/slf-extractor) [![version](https://img.shields.io/github/v/tag/memob0x/slf-extractor?label=version)]()
+
 In [Jagged Alliance 2](https://it.wikipedia.org/wiki/Jagged_Alliance_2), and perhaps in any [Sir-Tech](https://en.wikipedia.org/wiki/Sir-Tech) game installation folder, the resources files (textures, sounds...) are located in a folder called "Data", but they're all bundled in a proprietary file-format with "slf" extension, thus the game real assets are inacessible; this application aims to browse and export those assets.
 
 ## Usage

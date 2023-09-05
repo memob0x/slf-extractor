@@ -48,6 +48,8 @@ do
 	then
  		fyne-cross $GOOS --pull -arch $GOARCH -tags gui -output $output_name
 
+		mkdir -p dist/gui/$GOOS-$GOARCH
+
 		cp -r fyne-cross/bin/$GOOS-$GOARCH dist/gui/$GOOS-$GOARCH
 
 		rm -rf fyne-cross
