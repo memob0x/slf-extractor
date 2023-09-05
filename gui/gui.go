@@ -117,8 +117,6 @@ func (instance *Store) RenderFileBrowserDialog(dialogType BrowserDialogType) {
 			onSelection()
 		}, window)
 
-		break
-
 	case BrowserDialogypeSlf:
 		fileChooser = dialog.NewFileOpen(func(selection fyne.URIReadCloser, err error) {
 			if selection != nil {
@@ -129,8 +127,6 @@ func (instance *Store) RenderFileBrowserDialog(dialogType BrowserDialogType) {
 		}, window)
 
 		fileChooser.SetFilter(storage.NewExtensionFileFilter([]string{".slf"}))
-
-		break
 
 	default:
 		return

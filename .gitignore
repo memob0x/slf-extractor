@@ -1,2 +1,6 @@
+dist
+build.log
+fyne_metadata_init.go
 fyne-cross
-fyne-build-cli
+tmp-pkg
+__debug_bin*

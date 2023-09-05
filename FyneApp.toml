@@ -1,0 +1,8 @@
+Website = "https://github.com/memob0x"
+
+[Details]
+  Icon = "assets/icon.png"
+  Name = "Slf Extractor"
+  ID = "com.memob0x.slf-extractor"
+  Version = "0.0.2"
+  Build = 41
